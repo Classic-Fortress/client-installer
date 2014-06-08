@@ -26,7 +26,6 @@ OutFile "cfortini.exe"
 ;Initialize Variables
 
 Var MIRRORS_INI
-Var INSTALLERVERSIONS_INI
 
 ;----------------------------------------------------
 ;Interface Settings
@@ -148,26 +147,5 @@ Section "cfort.ini"
       DetailPrint "Writing to cfort.ini: [mirror_descriptions] $0=$2"
     ${EndUnless}
   ${Loop}
-
-  GetTempFileName $INSTALLERVERSIONS_INI
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading version information..." "https://raw.githubusercontent.com/Classic-Fortress/client-installer/master/installerversions.ini" $INSTALLERVERSIONS_INI /END
-
-  # Copy version from installerversions.ini
-  ReadINIStr $0 $INSTALLERVERSIONS_INI "versions" "windows"
-  ReadINIStr $1 $INSTALLERVERSIONS_INI "versions" "linux"
-  ReadINIStr $2 $INSTALLERVERSIONS_INI "versions" "macosx"
-  ReadINIStr $3 $INSTALLERVERSIONS_INI "versions" "server"
-  ReadINIStr $4 $INSTALLERVERSIONS_INI "versions" "serverwindows"
-
-  WriteINIStr "$EXEDIR\cfort.ini" "versions" "windows" $0
-  WriteINIStr "$EXEDIR\cfort.ini" "versions" "linux" $1
-  WriteINIStr "$EXEDIR\cfort.ini" "versions" "macosx" $2
-  WriteINIStr "$EXEDIR\cfort.ini" "versions" "server" $3
-  WriteINIStr "$EXEDIR\cfort.ini" "versions" "server" $4
-  DetailPrint "Writing to cfort.ini: [versions] windows=$0"
-  DetailPrint "Writing to cfort.ini: [versions] linux=$1"
-  DetailPrint "Writing to cfort.ini: [versions] macosx=$2"
-  DetailPrint "Writing to cfort.ini: [versions] server=$3"
-  DetailPrint "Writing to cfort.ini: [versions] serverwindows=$4"
 
 SectionEnd
