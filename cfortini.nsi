@@ -114,16 +114,16 @@ Section "cfort.ini"
 
   StrCpy $1 "0"
 
-  !insertmacro WriteINIString qwtf-gpl
-  !insertmacro WriteINIString qwtf-non-gpl
-  !insertmacro WriteINIString qwtf-sv-bin-x64
-  !insertmacro WriteINIString qwtf-sv-bin-x86
-  !insertmacro WriteINIString qwtf-sv-bin-win32
-  !insertmacro WriteINIString qwtf-sv-configs
-  !insertmacro WriteINIString qwtf-sv-gpl
-  !insertmacro WriteINIString qwtf-sv-maps
-  !insertmacro WriteINIString qwtf-sv-non-gpl
-  !insertmacro WriteINIString qwtf-sv-win32
+  !insertmacro WriteINIString cfort-gpl
+  !insertmacro WriteINIString cfort-non-gpl
+  !insertmacro WriteINIString cfortsv-bin-x64
+  !insertmacro WriteINIString cfortsv-bin-x86
+  !insertmacro WriteINIString cfortsv-bin-win32
+  !insertmacro WriteINIString cfortsv-configs
+  !insertmacro WriteINIString cfortsv-gpl
+  !insertmacro WriteINIString cfortsv-maps
+  !insertmacro WriteINIString cfortsv-non-gpl
+  !insertmacro WriteINIString cfortsv-win32
   !insertmacro WriteINIString qsw106
 
   GetTempFileName $MIRRORS_INI
