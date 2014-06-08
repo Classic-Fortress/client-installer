@@ -154,9 +154,9 @@ Section "" # Prepare installation
     ReadINIStr $0 $CFORT_INI "distfile_sizes" "qsw106.zip"
     IntOp $INSTSIZE $INSTSIZE + $0
   ${EndUnless}
-  ReadINIStr $0 $CFORT_INI "distfile_sizes" "qwtf-gpl.zip"
+  ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-gpl.zip"
   IntOp $INSTSIZE $INSTSIZE + $0
-  ReadINIStr $0 $CFORT_INI "distfile_sizes" "qwtf-non-gpl.zip"
+  ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-non-gpl.zip"
   IntOp $INSTSIZE $INSTSIZE + $0
 
   # Find out what mirror was selected
@@ -268,9 +268,9 @@ Section "Classic Fortress" CFORT
   RealProgress::SetProgress /NOUNLOAD $0
 
   # Download and install GPL files
-  !insertmacro InstallSection qwtf-gpl.zip "Classic Fortress setup files (GPL licensed)"
+  !insertmacro InstallSection cfort-gpl.zip "Classic Fortress setup files (GPL licensed)"
   # Add to installed size
-  ReadINIStr $0 $CFORT_INI "distfile_sizes" "qwtf-gpl.zip"
+  ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-gpl.zip"
   IntOp $INSTALLED $INSTALLED + $0
   # Set progress bar
   IntOp $0 $INSTALLED * 100
@@ -278,9 +278,9 @@ Section "Classic Fortress" CFORT
   RealProgress::SetProgress /NOUNLOAD $0
 
   # Download and install non-GPL files
-  !insertmacro InstallSection qwtf-non-gpl.zip "Classic Fortress setup files (non-GPL licensed)"
+  !insertmacro InstallSection cfort-non-gpl.zip "Classic Fortress setup files (non-GPL licensed)"
   # Add to installed size
-  ReadINIStr $0 $CFORT_INI "distfile_sizes" "qwtf-non-gpl.zip"
+  ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-non-gpl.zip"
   IntOp $INSTALLED $INSTALLED + $0
   # Set progress bar
   IntOp $0 $INSTALLED * 100
@@ -377,7 +377,7 @@ Section "" # Clean up installation
 
   # Write to registry
   WriteRegStr HKCU "Software\Classic Fortress" "Install_Dir" "$INSTDIR"
-  WriteRegStr HKCU "Software\nQuake" "Setup_Dir" "$DISTFILES_PATH"
+  WriteRegStr HKCU "Software\Classic Fortress" "Setup_Dir" "$DISTFILES_PATH"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "DisplayName" "Classic Fortress"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "DisplayVersion" "${VERSION}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "DisplayIcon" "$INSTDIR\uninstall.exe"
@@ -461,12 +461,12 @@ Section "Uninstall"
 
   # Remove setup files if user checked "remove setup files"
   ${If} $REMOVE_SETUP_FILES == 1
-    ReadRegStr $R0 HKCU "Software\nQuake" "Setup_Dir"
-    ${If} ${FileExists} "$R0\qwtf-gpl.zip"
-      Delete /REBOOTOK "$R0\qwtf-gpl.zip"
+    ReadRegStr $R0 HKCU "Software\Classic Fortress" "Setup_Dir"
+    ${If} ${FileExists} "$R0\cfort-gpl.zip"
+      Delete /REBOOTOK "$R0\cfort-gpl.zip"
     ${EndIf}
-    ${If} ${FileExists} "$R0\qwtf-non-gpl.zip"
-      Delete /REBOOTOK "$R0\qwtf-non-gpl.zip"
+    ${If} ${FileExists} "$R0\cfort-non-gpl.zip"
+      Delete /REBOOTOK "$R0\cfort-non-gpl.zip"
     ${EndIf}
     ${If} ${FileExists} "$R0\cfort.ini"
       Delete /REBOOTOK "$R0\cfort.ini"
@@ -639,9 +639,9 @@ Function SetSize
   !insertmacro DetermineSectionSize qsw106.zip
   IntOp $1 $1 + $SIZE
   SkipShareware:
-  !insertmacro DetermineSectionSize qwtf-gpl.zip
+  !insertmacro DetermineSectionSize cfort-gpl.zip
   IntOp $1 $1 + $SIZE
-  !insertmacro DetermineSectionSize qwtf-non-gpl.zip
+  !insertmacro DetermineSectionSize cfort-non-gpl.zip
   IntOp $1 $1 + $SIZE
 FunctionEnd
 
