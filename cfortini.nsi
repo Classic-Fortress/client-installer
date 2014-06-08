@@ -118,7 +118,6 @@ Section "cfort.ini"
   !insertmacro WriteINIString cfortsv-bin-x64
   !insertmacro WriteINIString cfortsv-bin-x86
   !insertmacro WriteINIString cfortsv-bin-win32
-  !insertmacro WriteINIString cfortsv-configs
   !insertmacro WriteINIString cfortsv-gpl
   !insertmacro WriteINIString cfortsv-maps
   !insertmacro WriteINIString cfortsv-non-gpl
