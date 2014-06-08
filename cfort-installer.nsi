@@ -83,11 +83,8 @@ ShowInstDetails "nevershow"
 Page custom ERRORS
 
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW "FinishShow"
-!define MUI_FINISHPAGE_LINK "Click here to visit the QuakeWorld portal"
-!define MUI_FINISHPAGE_LINK_LOCATION "http://www.quakeworld.nu/"
-!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR/readme.txt"
-!define MUI_FINISHPAGE_SHOWREADME_TEXT "Open readme"
-!define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+!define MUI_FINISHPAGE_LINK "Get started with Classic Fortress"
+!define MUI_FINISHPAGE_LINK_LOCATION "https://github.com/Classic-Fortress/client-installer/wiki"
 !define MUI_FINISHPAGE_NOREBOOTSUPPORT
 !insertmacro MUI_PAGE_FINISH
 
@@ -316,8 +313,7 @@ Section "" # StartMenu
     WriteINIStr "$SMPROGRAMS\$STARTMENU_FOLDER\Links\List of Servers.url" "InternetShortcut" "URL" "http://www.quakeservers.net/quakeworld/servers/t=tf/so=8/"
 
     # Create shortcuts
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Play Classic Fortress.lnk" "$INSTDIR\ezquake.exe" "" "$INSTDIR\ezquake.exe" 0
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Readme.lnk" "$INSTDIR\readme.txt" "" "$INSTDIR\readme.txt" 0
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Play Classic Fortress.lnk" "$INSTDIR\ezfortress.exe" "" "$INSTDIR\ezfortress.exe" 0
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall Classic Fortress.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
 
     # Write startmenu folder to registry
