@@ -1,14 +1,9 @@
 ;Classic Fortress Client Installer Script
-;By Empezar 2014-06-07; Last modified 2014-06-07
-
-!define VERSION "1.0"
-!define SHORTVERSION "10"
 
 Name "Classic Fortress"
-OutFile "Binaries\cfort${SHORTVERSION}.exe"
+OutFile "Binaries\cfortress.exe"
 InstallDir "C:\Classic Fortress"
 
-!define INSTALLER_URL "http://qwtf.net" # Note: no trailing slash!
 !define DISTFILES_PATH "$LOCALAPPDATA\Classic Fortress\" # Note: no trailing slash!
 
 # Editing anything below this line is not recommended
@@ -26,8 +21,6 @@ InstallDirRegKey HKCU "Software\Classic Fortress" "Install_Dir"
 !include "LogicLib.nsh"
 !include "Time.nsh"
 !include "Locate.nsh"
-!include "VersionCompare.nsh"
-!include "VersionConvert.nsh"
 !include "WinMessages.nsh"
 !include "MultiUser.nsh"
 !include "cfort-macros.nsh"
@@ -113,8 +106,8 @@ UninstPage custom un.UNINSTALL
 ;----------------------------------------------------
 ;NSIS Manipulation
 
-LangString ^Branding ${LANG_ENGLISH} "Classic Fortress Installer v${VERSION}"
-LangString ^SetupCaption ${LANG_ENGLISH} "Classic Fortress Installer"
+LangString ^Branding ${LANG_ENGLISH} "Classic Fortress Client Installer"
+LangString ^SetupCaption ${LANG_ENGLISH} "Classic Fortress Client Installer"
 LangString ^SpaceRequired ${LANG_ENGLISH} "Download size: "
 
 ;----------------------------------------------------
@@ -379,13 +372,11 @@ Section "" # Clean up installation
   WriteRegStr HKCU "Software\Classic Fortress" "Install_Dir" "$INSTDIR"
   WriteRegStr HKCU "Software\Classic Fortress" "Setup_Dir" "$DISTFILES_PATH"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "DisplayName" "Classic Fortress"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "DisplayVersion" "${VERSION}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "DisplayIcon" "$INSTDIR\uninstall.exe"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "UninstallString" "$INSTDIR\uninstall.exe"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "Publisher" "Empezar (mpezar@gmail.com)"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "URLUpdateInfo" "http://sourceforge.net/project/showfiles.php?group_id=197706"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "URLInfoAbout" "http://qwtf.com/"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "HelpLink" "http://sourceforge.net/forum/forum.php?forum_id=702198"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "Publisher" "Empezar & hifi"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "URLInfoAbout" "https://github.com/classic-fortress/client-installer"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "HelpLink" "https://github.com/classic-fortress/client-installer/issues"
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "NoModify" "1"
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "NoRepair" "1"
 
@@ -683,17 +674,6 @@ Function .onInit
       Abort
     ${EndIf}
   ${EndUnless}
-
-  # Prompt the user if there are newer installer versions available
-  ReadINIStr $0 $CFORT_INI "versions" "windows"
-  ${VersionConvert} ${VERSION} "" $R0
-  ${VersionCompare} $R0 $0 $1
-  ${If} $1 == 2
-    MessageBox MB_YESNO|MB_ICONEXCLAMATION "A newer version of Classic Fortress is available.$\r$\n$\r$\nDo you wish to be taken to the download page?" IDNO ContinueInstall
-    ExecShell "open" ${INSTALLER_URL}
-    Abort
-  ${EndIf}
-  ContinueInstall:
 
   InitEnd:
 
