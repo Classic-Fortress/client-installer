@@ -310,7 +310,6 @@ Section "" # StartMenu
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER\Links"
     WriteINIStr "$SMPROGRAMS\$STARTMENU_FOLDER\Links\Latest News.url" "InternetShortcut" "URL" "http://www.quakeworld.nu/"
     WriteINIStr "$SMPROGRAMS\$STARTMENU_FOLDER\Links\Message Board.url" "InternetShortcut" "URL" "http://www.quakeworld.nu/forum/14"
-    WriteINIStr "$SMPROGRAMS\$STARTMENU_FOLDER\Links\List of Servers.url" "InternetShortcut" "URL" "http://www.quakeservers.net/quakeworld/servers/t=tf/so=8/"
 
     # Create shortcuts
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Play Classic Fortress.lnk" "$INSTDIR\ezfortress.exe" "" "$INSTDIR\ezfortress.exe" 0
