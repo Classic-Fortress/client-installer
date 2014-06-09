@@ -40,7 +40,6 @@ Var INSTLOG
 Var INSTLOGTMP
 Var INSTSIZE
 Var CFORT_INI
-Var OFFLINE
 Var RETRIES
 Var SIZE
 
@@ -333,41 +332,27 @@ SectionEnd
 Function DOWNLOAD
 
   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "download.ini"
-  # Change the text on the distfile folder page if the installer is in offline mode
-  ${If} $OFFLINE == 1
-    !insertmacro MUI_HEADER_TEXT "Setup Files" "Select where the setup files are located."
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "download.ini" "Field 1" "Text" "Setup will use the setup files located in the following folder. To use a different folder, click Browse and select another folder. Click Next to continue."
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "download.ini" "Field 4" "Type" ""
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "download.ini" "Field 4" "State" "0"
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "download.ini" "Field 5" "Type" ""
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "download.ini" "Field 5" "State" "0"
-  ${Else}
-    !insertmacro MUI_HEADER_TEXT "Setup Files" "Select the download location for the setup files."
-  ${EndIf}
+  !insertmacro MUI_HEADER_TEXT "Setup Files" "Select the download location for the setup files."
   !insertmacro MUI_INSTALLOPTIONS_WRITE "download.ini" "Field 3" "State" "${DISTFILES_PATH}"
 
-  # Only display mirror selection if the installer is in online mode
-  ${Unless} $OFFLINE == 1
-    # Fix the mirrors for the Preferences page
-    StrCpy $0 1
-    StrCpy $2 "Randomly selected mirror (Recommended)"
+  # Fix the mirrors for the Preferences page
+  StrCpy $0 1
+  StrCpy $2 "Randomly selected mirror (Recommended)"
+  ReadINIStr $1 $CFORT_INI "mirror_descriptions" $0
+  ${DoUntil} $1 == ""
     ReadINIStr $1 $CFORT_INI "mirror_descriptions" $0
-    ${DoUntil} $1 == ""
-      ReadINIStr $1 $CFORT_INI "mirror_descriptions" $0
-      ${Unless} $1 == ""
-        StrCpy $2 "$2|$1"
-      ${EndUnless}
-      IntOp $0 $0 + 1
-    ${LoopUntil} $1 == ""
+    ${Unless} $1 == ""
+      StrCpy $2 "$2|$1"
+    ${EndUnless}
+    IntOp $0 $0 + 1
+  ${LoopUntil} $1 == ""
 
-    StrCpy $0 $2 3
-    ${If} $0 == "|"
-      StrCpy $2 $2 "" 1
-    ${EndIf}
+  StrCpy $0 $2 3
+  ${If} $0 == "|"
+    StrCpy $2 $2 "" 1
+  ${EndIf}
 
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "download.ini" "Field 8" "ListItems" $2
-  ${EndUnless}
-
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "download.ini" "Field 8" "ListItems" $2
   !insertmacro MUI_INSTALLOPTIONS_DISPLAY "download.ini"
 
 FunctionEnd
@@ -408,12 +393,7 @@ FunctionEnd
 ;Welcome/Finish page manipulation
 
 Function WelcomeShow
-  # Remove the part about Classic Fortress being an online installer on welcome page if the installer is in offline mode
-  ${Unless} $OFFLINE == 1
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 3" "Text" "This is the installation wizard of Classic Fortress, the only true way to experience the original Team Fortress as it was meant to be.\r\n\r\nThis is an online installer and therefore requires a stable internet connection."
-  ${Else}
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 3" "Text" "This is the installation wizard of Classic Fortress, the only true way to experience the original Team Fortress as it was meant to be."
-  ${EndUnless}
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "ioSpecial.ini" "Field 3" "Text" "This is the installation wizard of Classic Fortress, the only true way to experience the original Team Fortress as it was meant to be.\r\n\r\nThis is an online installer and therefore requires a stable internet connection."
 FunctionEnd
 
 Function FinishShow
@@ -422,11 +402,6 @@ Function FinishShow
     GetDlgItem $R0 $HWNDPARENT 3
     EnableWindow $R0 0
   ${EndUnless}
-  # Hide the community link if the installer is in offline mode
-  ${If} $OFFLINE == 1
-    !insertmacro MUI_INSTALLOPTIONS_READ $R0 "ioSpecial.ini" "Field 5" "HWND"
-    ShowWindow $R0 ${SW_HIDE}
-  ${EndIf}
 FunctionEnd
 
 ;----------------------------------------------------
@@ -479,12 +454,6 @@ Function .onInit
       MessageBox MB_OK|MB_ICONEXCLAMATION "Installation aborted."
       Abort
     ${Else}
-      ${Unless} $RETRIES > 0
-        MessageBox MB_YESNO|MB_ICONEXCLAMATION "Are you trying to install Classic Fortress offline?" IDNO Online
-        StrCpy $OFFLINE 1
-        Goto InitEnd
-      ${EndUnless}
-      Online:
       ${Unless} $RETRIES == 2
         MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "Could not download cfort.ini." IDCANCEL Cancel
         IntOp $RETRIES $RETRIES + 1
@@ -495,8 +464,6 @@ Function .onInit
       Abort
     ${EndIf}
   ${EndUnless}
-
-  InitEnd:
 
 FunctionEnd
 
@@ -696,15 +663,6 @@ Function .installSection
     DetailPrint "Extracting $R1, please wait..."
     nsisunz::UnzipToStack "$EXEDIR\$R0" $INSTDIR
   ${ElseIf} ${FileExists} "$DISTFILES_PATH\$R0"
-  ${OrIf} $OFFLINE == 1
-    ${If} $DISTFILES_UPDATE == 0
-    ${OrIf} $R2 == 0
-      DetailPrint "Extracting $R1, please wait..."
-      nsisunz::UnzipToStack "$DISTFILES_PATH\$R0" $INSTDIR
-    ${ElseIf} $R2 == 1
-    ${AndIf} $DISTFILES_UPDATE == 1
-      Call .installDistfile
-    ${EndIf}
   ${ElseUnless} ${FileExists} "$DISTFILES_PATH\$R0"
     Call .installDistfile
   ${EndIf}
