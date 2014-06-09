@@ -8,10 +8,6 @@ InstallDir "C:\Classic Fortress"
 
 # Editing anything below this line is not recommended
 ;---------------------------------------------------
-
-InstallDirRegKey HKCU "Software\Classic Fortress" "Install_Dir"
-
-;----------------------------------------------------
 ;Header Files
 
 !include "MUI.nsh"
@@ -45,12 +41,8 @@ Var INSTLOGTMP
 Var INSTSIZE
 Var CFORT_INI
 Var OFFLINE
-Var REMOVE_ALL_FILES
-Var REMOVE_MODIFIED_FILES
-Var REMOVE_SETUP_FILES
 Var RETRIES
 Var SIZE
-Var STARTMENU_FOLDER
 
 ;----------------------------------------------------
 ;Interface Settings
@@ -75,8 +67,6 @@ DirText "Setup will install Classic Fortress in the following folder. To install
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW DirectoryPageShow
 !insertmacro MUI_PAGE_DIRECTORY
 
-!insertmacro MUI_PAGE_STARTMENU "Application" $STARTMENU_FOLDER
-
 ShowInstDetails "nevershow"
 !insertmacro MUI_PAGE_INSTFILES
 
@@ -87,13 +77,6 @@ Page custom ERRORS
 !define MUI_FINISHPAGE_LINK_LOCATION "https://github.com/Classic-Fortress/client-installer/wiki"
 !define MUI_FINISHPAGE_NOREBOOTSUPPORT
 !insertmacro MUI_PAGE_FINISH
-
-;----------------------------------------------------
-;Uninstaller Pages
-
-UninstPage custom un.UNINSTALL
-
-!insertmacro MUI_UNPAGE_INSTFILES
 
 ;----------------------------------------------------
 ;Languages
@@ -112,7 +95,6 @@ LangString ^SpaceRequired ${LANG_ENGLISH} "Download size: "
 
 ReserveFile "download.ini"
 ReserveFile "errors.ini"
-ReserveFile "uninstall.ini"
 
 !insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
@@ -301,29 +283,6 @@ Section "Classic Fortress" CFORT
 
 SectionEnd
 
-Section "" # StartMenu
-
-  # Copy the first char of the startmenu folder selected during installation
-  StrCpy $0 $STARTMENU_FOLDER 1
-
-  ${Unless} $0 == ">"
-    CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-
-    # Create links
-    CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER\Links"
-    WriteINIStr "$SMPROGRAMS\$STARTMENU_FOLDER\Links\Latest News.url" "InternetShortcut" "URL" "http://www.quakeworld.nu/"
-    WriteINIStr "$SMPROGRAMS\$STARTMENU_FOLDER\Links\Message Board.url" "InternetShortcut" "URL" "http://www.quakeworld.nu/forum/14"
-
-    # Create shortcuts
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Play Classic Fortress.lnk" "$INSTDIR\ezfortress.exe" "" "$INSTDIR\ezfortress.exe" 0
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall Classic Fortress.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-
-    # Write startmenu folder to registry
-    WriteRegStr HKCU "Software\Classic Fortress" "StartMenu_Folder" $STARTMENU_FOLDER
-  ${EndUnless}
-
-SectionEnd
-
 Section "" # Clean up installation
 
   # Close open temporary files
@@ -365,123 +324,6 @@ Section "" # Clean up installation
     FlushINI $CFORT_INI
     CopyFiles $CFORT_INI "$DISTFILES_PATH\cfort.ini"
   ${EndIf}
-
-  # Write to registry
-  WriteRegStr HKCU "Software\Classic Fortress" "Install_Dir" "$INSTDIR"
-  WriteRegStr HKCU "Software\Classic Fortress" "Setup_Dir" "$DISTFILES_PATH"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "DisplayName" "Classic Fortress"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "DisplayIcon" "$INSTDIR\uninstall.exe"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "UninstallString" "$INSTDIR\uninstall.exe"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "Publisher" "Empezar & hifi"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "URLInfoAbout" "https://github.com/classic-fortress/client-installer"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "HelpLink" "https://github.com/classic-fortress/client-installer/issues"
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "NoModify" "1"
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress" "NoRepair" "1"
-
-  # Create uninstaller
-  WriteUninstaller "uninstall.exe"
-
-SectionEnd
-
-;----------------------------------------------------
-;Uninstaller Section
-
-Section "Uninstall"
-
-  # Set out path to temporary files
-  SetOutPath $TEMP
-
-  # Read uninstall settings
-  !insertmacro MUI_INSTALLOPTIONS_READ $REMOVE_MODIFIED_FILES "uninstall.ini" "Field 5" "State"
-  !insertmacro MUI_INSTALLOPTIONS_READ $REMOVE_ALL_FILES "uninstall.ini" "Field 6" "State"
-  !insertmacro MUI_INSTALLOPTIONS_READ $REMOVE_SETUP_FILES "uninstall.ini" "Field 7" "State"
-
-  # Set progress bar to 0%
-  RealProgress::SetProgress /NOUNLOAD 0
-
-  # If install.log exists and user didn't check "remove all files", remove all files listed in install.log
-  ${If} ${FileExists} "$INSTDIR\install.log"
-  ${AndIf} $REMOVE_ALL_FILES != 1
-    # Get line count for install.log
-    Push "$INSTDIR\install.log"
-    Call un.LineCount
-    Pop $R1 # Line count
-    IntOp $R1 $R1 - 1 # Remove the timestamp from the line count
-    FileOpen $R0 "$INSTDIR\install.log" r
-    # Get installation time from install.log
-    FileRead $R0 $0
-    StrCpy $1 $0 -2 14
-    StrCpy $5 1 # Current line
-    StrCpy $6 0 # Current % Progress
-    ${DoUntil} ${Errors}
-      FileRead $R0 $0
-      StrCpy $0 $0 -2
-      # Only remove file if it has not been altered since install, if the user chose to do so
-      ${If} ${FileExists} "$INSTDIR\$0"
-      ${AndUnless} $REMOVE_MODIFIED_FILES == 1
-        ${time::GetFileTime} "$INSTDIR\$0" $2 $3 $4
-        ${time::MathTime} "second($1) - second($3) =" $2
-        ${If} $2 >= 0
-          Delete /REBOOTOK "$INSTDIR\$0"
-        ${EndIf}
-      ${ElseIf} $REMOVE_MODIFIED_FILES == 1
-      ${AndIf} ${FileExists} "$INSTDIR\$0"
-        Delete /REBOOTOK "$INSTDIR\$0"
-      ${EndIf}
-      # Set progress bar
-      IntOp $7 $5 * 100
-      IntOp $7 $7 / $R1
-      RealProgress::SetProgress /NOUNLOAD $7
-      IntOp $5 $5 + 1
-    ${LoopUntil} ${Errors}
-    FileClose $R0
-    Delete /REBOOTOK "$INSTDIR\install.log"
-    Delete /REBOOTOK "$INSTDIR\uninstall.exe"
-    ${locate::RMDirEmpty} $INSTDIR /M=*.* $0
-    DetailPrint "Removed $0 empty directories"
-    # Remove directory if empty
-    !insertmacro RemoveFolderIfEmpty $INSTDIR
-  ${Else}
-    # Ask the user if he is sure about removing all the files contained within the Classic Fortress directory
-    MessageBox MB_YESNO|MB_ICONEXCLAMATION "This will remove all files contained within the Classic Fortress directory.$\r$\n$\r$\nAre you sure?" IDNO AbortUninst
-    RMDir /r /REBOOTOK $INSTDIR
-    RealProgress::SetProgress /NOUNLOAD 100
-  ${EndIf}
-
-  # Remove setup files if user checked "remove setup files"
-  ${If} $REMOVE_SETUP_FILES == 1
-    ReadRegStr $R0 HKCU "Software\Classic Fortress" "Setup_Dir"
-    ${If} ${FileExists} "$R0\cfort-gpl.zip"
-      Delete /REBOOTOK "$R0\cfort-gpl.zip"
-    ${EndIf}
-    ${If} ${FileExists} "$R0\cfort-non-gpl.zip"
-      Delete /REBOOTOK "$R0\cfort-non-gpl.zip"
-    ${EndIf}
-    ${If} ${FileExists} "$R0\cfort.ini"
-      Delete /REBOOTOK "$R0\cfort.ini"
-    ${EndIf}
-    ${If} ${FileExists} "$R0\pak0.pak"
-      Delete /REBOOTOK "$R0\pak0.pak"
-    ${EndIf}
-    # Remove directory if empty
-    ${locate::RMDirEmpty} $R0 /M=*.* $0
-    !insertmacro RemoveFolderIfEmpty $R0
-  ${EndIf}
-
-  # Remove start menu items and registry entries if they belong to this Classic Fortress
-  ReadRegStr $R0 HKCU "Software\Classic Fortress" "Install_Dir"
-  ${If} $R0 == $INSTDIR
-    # Remove start menu items
-    ReadRegStr $R0 HKCU "Software\Classic Fortress" "StartMenu_Folder"
-    RMDir /r /REBOOTOK "$SMPROGRAMS\$R0"
-    DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Classic Fortress"
-    DeleteRegKey HKCU "Software\Classic Fortress"
-  ${EndIf}
-
-  Goto FinishUninst
-  AbortUninst:
-  Abort "Uninstallation aborted."
-  FinishUninst:
 
 SectionEnd
 
@@ -559,25 +401,6 @@ Function ERRORS
     !insertmacro MUI_INSTALLOPTIONS_WRITE "errors.ini" "Field 2" "ListItems" $1
     !insertmacro MUI_INSTALLOPTIONS_DISPLAY "errors.ini"
   ${EndIf}
-
-FunctionEnd
-
-Function un.UNINSTALL
-
-  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "uninstall.ini"
-
-  # Remove all options on uninstall page except for "remove all files" if install.log is missing
-  ${Unless} ${FileExists} "$INSTDIR\install.log"
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "uninstall.ini" "Field 4" "State" "0"
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "uninstall.ini" "Field 4" "Flags" "DISABLED"
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "uninstall.ini" "Field 5" "Flags" "DISABLED"
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "uninstall.ini" "Field 6" "Text" "Remove all files contained within the Classic Fortress directory (install.log missing)."
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "uninstall.ini" "Field 6" "State" "1"
-    !insertmacro MUI_INSTALLOPTIONS_WRITE "uninstall.ini" "Field 6" "Flags" "FOCUS"
-  ${EndUnless}
-  !insertmacro MUI_HEADER_TEXT "Uninstall Classic Fortress" "Remove Classic Fortress from your computer."
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "uninstall.ini" "Field 3" "State" "$INSTDIR\"
-  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "uninstall.ini"
 
 FunctionEnd
 
@@ -674,12 +497,6 @@ Function .onInit
   ${EndUnless}
 
   InitEnd:
-
-FunctionEnd
-
-Function un.onInit
-
-  !insertmacro MULTIUSER_UNINIT
 
 FunctionEnd
 
@@ -910,24 +727,6 @@ Function .installSection
 FunctionEnd
 
 Function .LineCount
-  Exch $R0
-  Push $R1
-  Push $R2
-   FileOpen $R0 $R0 r
-  loop:
-   ClearErrors
-   FileRead $R0 $R1
-   IfErrors +3
-    IntOp $R2 $R2 + 1
-  Goto loop
-   FileClose $R0
-   StrCpy $R0 $R2
-  Pop $R2
-  Pop $R1
-  Exch $R0
-FunctionEnd
-
-Function un.LineCount
   Exch $R0
   Push $R1
   Push $R2
