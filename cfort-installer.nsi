@@ -81,7 +81,7 @@ LangString ^SpaceRequired ${LANG_ENGLISH} "Download size: "
 ;----------------------------------------------------
 ;Reserve Files
 
-ReserveFile "download.ini"
+ReserveFile "mirrorselect.ini"
 ReserveFile "errors.ini"
 
 !insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
@@ -105,7 +105,7 @@ Section "" # Prepare installation
   IntOp $INSTSIZE $INSTSIZE + $0
 
   # Find out what mirror was selected
-  !insertmacro MUI_INSTALLOPTIONS_READ $R0 "download.ini" "Field 3" "State"
+  !insertmacro MUI_INSTALLOPTIONS_READ $R0 "mirrorselect.ini" "Field 3" "State"
   ${If} $R0 == "Randomly selected mirror (Recommended)"
     # Get amount of mirrors ($0 = amount of mirrors)
     StrCpy $0 1
@@ -222,7 +222,7 @@ SectionEnd
 
 Function DOWNLOAD
 
-  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "download.ini"
+  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "mirrorselect.ini"
   !insertmacro MUI_HEADER_TEXT "Setup Files" "Select a mirror."
 
   # Fix the mirrors for the Preferences page
@@ -242,8 +242,8 @@ Function DOWNLOAD
     StrCpy $2 $2 "" 1
   ${EndIf}
 
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "download.ini" "Field 3" "ListItems" $2
-  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "download.ini"
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "mirrorselect.ini" "Field 3" "ListItems" $2
+  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "mirrorselect.ini"
 
 FunctionEnd
 
@@ -419,9 +419,7 @@ FunctionEnd
 Function .installSection
   Pop $R1 # distfile info
   Pop $R0 # distfile filename
-  ${If} ${FileExists} "$TEMP\$R0"
-    Call .installDistfile
-  ${EndIf}
+  Call .installDistfile
   Pop $0
   ${If} $0 == "Error opening ZIP file"
   ${OrIf} $0 == "Error opening output file(s)"
