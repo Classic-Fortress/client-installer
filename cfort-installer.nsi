@@ -175,8 +175,8 @@ Section "Classic Fortress" CFORT
   Delete "$INSTDIR\SLICNSE.TXT"
   Delete "$INSTDIR\TECHINFO.TXT"
   Delete "$INSTDIR\MGENVXD.VXD"
-  Rename "$INSTDIR\ID1" "$INSTDIR\qw"
-  Rename "$INSTDIR\qw\PAK0.PAK" "$INSTDIR\qw\pak0.pak"
+  Rename "$INSTDIR\ID1\PAK0.PAK" "$INSTDIR\ezquake\pak0.pak"
+  RMDir "$INSTDIR\ID1"
   # Add to installed size
   ReadINIStr $0 $CFORT_INI "distfile_sizes" "qsw106.zip"
   IntOp $INSTALLED $INSTALLED + $0
@@ -414,6 +414,7 @@ Function .installDistfile
   ${EndUnless}
   DetailPrint "Extracting $R1, please wait..."
   nsisunz::UnzipToStack "$TEMP\$R0" $INSTDIR
+  Delete "$TEMP\$R0"
 FunctionEnd
 
 Function .installSection
