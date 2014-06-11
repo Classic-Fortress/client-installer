@@ -189,6 +189,9 @@ Section "Classic Fortress" CFORT
   ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-gpl.zip"
   IntOp $INSTALLED $INSTALLED + $0
   # Move pak0.pak into place
+  ${If} ${FileExists} "$INSTDIR\ezquake\pak0.pak"
+    Delete "$INSTDIR\ezquake\pak0.pak"
+  ${EndIf}
   Rename "$INSTDIR\ID1\PAK0.PAK" "$INSTDIR\ezquake\pak0.pak"
   RMDir "$INSTDIR\ID1"
   # Set progress bar
