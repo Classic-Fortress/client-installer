@@ -183,8 +183,8 @@ Section "Classic Fortress" CFORT
   IntOp $0 $0 / $INSTSIZE
   RealProgress::SetProgress /NOUNLOAD $0
 
-  # Download and install GPL files
-  !insertmacro InstallSection cfort-gpl.zip "Classic Fortress setup files (GPL licensed)"
+  # Download and install client files
+  !insertmacro InstallSection cfort-gpl.zip "client files"
   # Add to installed size
   ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-gpl.zip"
   IntOp $INSTALLED $INSTALLED + $0
@@ -200,7 +200,7 @@ Section "Classic Fortress" CFORT
   RealProgress::SetProgress /NOUNLOAD $0
 
   # Download and install non-GPL files
-  !insertmacro InstallSection cfort-non-gpl.zip "Classic Fortress setup files (non-GPL licensed)"
+  !insertmacro InstallSection cfort-non-gpl.zip "Team Fortress game files"
   # Add to installed size
   ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-non-gpl.zip"
   IntOp $INSTALLED $INSTALLED + $0
