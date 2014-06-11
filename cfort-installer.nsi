@@ -399,8 +399,9 @@ Function .installConfigs
 FunctionEnd
 
 Function .installDistfile
+  GetTempFileName $1
   Retry:
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading $R1, please wait..." /TIMEOUT 5000 "$DISTFILES_URL/$R0" "$TEMP\$R0" /END
+  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading $R1, please wait..." /TIMEOUT 5000 "$DISTFILES_URL/$R0" "$1" /END
   Pop $0
   ${Unless} $0 == "OK"
     ${If} $0 == "Cancelled"
@@ -414,8 +415,8 @@ Function .installDistfile
     ${EndIf}
   ${EndUnless}
   DetailPrint "Extracting $R1, please wait..."
-  nsisunz::UnzipToStack "$TEMP\$R0" $INSTDIR
-  Delete "$TEMP\$R0"
+  nsisunz::UnzipToStack "$1" $INSTDIR
+  Delete "$1"
 FunctionEnd
 
 Function .installSection
