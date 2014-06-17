@@ -49,11 +49,11 @@ Var SIZE
 LicenseForceSelection checkbox "I agree to these terms and conditions"
 !insertmacro MUI_PAGE_LICENSE "license.txt"
 
-Page custom DOWNLOAD
-
 DirText "Setup will install Classic Fortress in the following folder. To install in a different folder, click Browse and select another folder. Click Next to continue.$\r$\n$\r$\nIt is NOT ADVISABLE to install in the Program Files folder." "Destination Folder" "Browse" "Select the folder to install Classic Fortress in:"
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW DirectoryPageShow
 !insertmacro MUI_PAGE_DIRECTORY
+
+Page custom DOWNLOAD
 
 ShowInstDetails "nevershow"
 !insertmacro MUI_PAGE_INSTFILES
