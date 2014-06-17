@@ -176,6 +176,13 @@ Section "Classic Fortress" CFORT
   Delete "$INSTDIR\SLICNSE.TXT"
   Delete "$INSTDIR\TECHINFO.TXT"
   Delete "$INSTDIR\MGENVXD.VXD"
+  # Move pak0.pak into place
+  ${If} ${FileExists} "$INSTDIR\qw\pak0.pak"
+    Delete "$INSTDIR\qw\pak0.pak"
+  ${EndIf}
+  CreateDirectory "$INSTDIR\qw"
+  Rename "$INSTDIR\ID1\PAK0.PAK" "$INSTDIR\qw\pak0.pak"
+  RMDir "$INSTDIR\ID1"
   # Add to installed size
   ReadINIStr $0 $CFORT_INI "distfile_sizes" "qsw106.zip"
   IntOp $INSTALLED $INSTALLED + $0
@@ -189,12 +196,6 @@ Section "Classic Fortress" CFORT
   # Add to installed size
   ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-gpl.zip"
   IntOp $INSTALLED $INSTALLED + $0
-  # Move pak0.pak into place
-  ${If} ${FileExists} "$INSTDIR\ezquake\pak0.pak"
-    Delete "$INSTDIR\ezquake\pak0.pak"
-  ${EndIf}
-  Rename "$INSTDIR\ID1\PAK0.PAK" "$INSTDIR\ezquake\pak0.pak"
-  RMDir "$INSTDIR\ID1"
   # Set progress bar
   IntOp $0 $INSTALLED * 100
   IntOp $0 $0 / $INSTSIZE
