@@ -61,6 +61,7 @@ ShowInstDetails "nevershow"
 Page custom ERRORS
 
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW "FinishShow"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\ezfortress.exe"
 !define MUI_FINISHPAGE_LINK "Get started with Classic Fortress"
 !define MUI_FINISHPAGE_LINK_LOCATION "https://github.com/Classic-Fortress/client-installer/wiki"
 !define MUI_FINISHPAGE_NOREBOOTSUPPORT
