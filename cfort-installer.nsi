@@ -370,37 +370,8 @@ Function .abortInstallation
 FunctionEnd
 
 Function .installConfigs
-  CreateDirectory "$INSTDIR\fortress\classes"
-
   StrCpy $0 "fortress\default.cfg"
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading default configuration, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/default.cfg" "$INSTDIR\$0" /END
-
-  StrCpy $0 "fortress\classes\scout.cfg"
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading scout configuration, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/scout.cfg" "$INSTDIR\$0" /END
-
-  StrCpy $0 "fortress\classes\sniper.cfg"
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading sniper configuration, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/sniper.cfg" "$INSTDIR\$0" /END
-
-  StrCpy $0 "fortress\classes\soldier.cfg"
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading soldier configuration, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/soldier.cfg" "$INSTDIR\$0" /END
-
-  StrCpy $0 "fortress\classes\demoman.cfg"
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading demoman configuration, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/demoman.cfg" "$INSTDIR\$0" /END
-
-  StrCpy $0 "fortress\classes\medic.cfg"
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading medic configuration, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/medic.cfg" "$INSTDIR\$0" /END
-
-  StrCpy $0 "fortress\classes\hwguy.cfg"
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading hwguy configuration, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/hwguy.cfg" "$INSTDIR\$0" /END
-
-  StrCpy $0 "fortress\classes\pyro.cfg"
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading pyro configuration, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/pyro.cfg" "$INSTDIR\$0" /END
-
-  StrCpy $0 "fortress\classes\spy.cfg"
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading spy configuration, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/spy.cfg" "$INSTDIR\$0" /END
-
-  StrCpy $0 "fortress\classes\engineer.cfg"
-  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading engineer configuration, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/engineer.cfg" "$INSTDIR\$0" /END
+  inetc::get /NOUNLOAD /CAPTION "Downloading..." /BANNER "Downloading configuration files, please wait..." /TIMEOUT 5000 "https://raw.githubusercontent.com/Classic-Fortress/client-scripts/master/default.cfg" "$INSTDIR\$0" /END
 FunctionEnd
 
 Function .installDistfile
