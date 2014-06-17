@@ -392,13 +392,6 @@ Function .installDistfile
   ${EndUnless}
   DetailPrint "Extracting $R1, please wait..."
   nsisunz::UnzipToStack "$1" $INSTDIR
-  Delete "$1"
-FunctionEnd
-
-Function .installSection
-  Pop $R1 # distfile info
-  Pop $R0 # distfile filename
-  Call .installDistfile
   Pop $0
   ${If} $0 == "Error opening ZIP file"
   ${OrIf} $0 == "Error opening output file(s)"
@@ -408,4 +401,11 @@ Function .installSection
     FileWrite $ERRLOG 'Error extracting "$R0": $0|'
     IntOp $ERRORS $ERRORS + 1
   ${EndIf}
+  Delete "$1"
+FunctionEnd
+
+Function .installSection
+  Pop $R1 # distfile info
+  Pop $R0 # distfile filename
+  Call .installDistfile
 FunctionEnd
