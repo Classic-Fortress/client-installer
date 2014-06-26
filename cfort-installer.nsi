@@ -62,8 +62,8 @@ Page custom ERRORS
 
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW "FinishShow"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\cfortress.exe"
-!define MUI_FINISHPAGE_LINK "Get started with Classic Fortress"
-!define MUI_FINISHPAGE_LINK_LOCATION "https://github.com/Classic-Fortress/client-installer/wiki"
+!define MUI_FINISHPAGE_LINK "Visit the Classic Fortress wiki (recommended)"
+!define MUI_FINISHPAGE_LINK_LOCATION "https://github.com/Classic-Fortress/server-qwprogs/wiki"
 !define MUI_FINISHPAGE_NOREBOOTSUPPORT
 !insertmacro MUI_PAGE_FINISH
 
