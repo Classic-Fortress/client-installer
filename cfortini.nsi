@@ -115,6 +115,9 @@ Section "cfort.ini"
 
   !insertmacro WriteINIString cfort-gpl
   !insertmacro WriteINIString cfort-non-gpl
+  !insertmacro WriteINIString cfort-bin-x64
+  !insertmacro WriteINIString cfort-bin-x86
+  !insertmacro WriteINIString cfort-bin-win32
   !insertmacro WriteINIString cfortsv-bin-x64
   !insertmacro WriteINIString cfortsv-bin-x86
   !insertmacro WriteINIString cfortsv-bin-win32
