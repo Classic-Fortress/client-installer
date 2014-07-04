@@ -100,6 +100,8 @@ Section "" # Prepare installation
   # Calculate the installation size
   ReadINIStr $0 $CFORT_INI "distfile_sizes" "qsw106.zip"
   IntOp $INSTSIZE $INSTSIZE + $0
+  ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-bin-win32.zip"
+  IntOp $INSTSIZE $INSTSIZE + $0
   ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-gpl.zip"
   IntOp $INSTSIZE $INSTSIZE + $0
   ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-non-gpl.zip"
@@ -185,6 +187,16 @@ Section "Classic Fortress" CFORT
   RMDir "$INSTDIR\ID1"
   # Add to installed size
   ReadINIStr $0 $CFORT_INI "distfile_sizes" "qsw106.zip"
+  IntOp $INSTALLED $INSTALLED + $0
+  # Set progress bar
+  IntOp $0 $INSTALLED * 100
+  IntOp $0 $0 / $INSTSIZE
+  RealProgress::SetProgress /NOUNLOAD $0
+
+  # Download and install client
+  !insertmacro InstallSection cfort-bin-win32.zip "game client"
+  # Add to installed size
+  ReadINIStr $0 $CFORT_INI "distfile_sizes" "cfort-bin-win32.zip"
   IntOp $INSTALLED $INSTALLED + $0
   # Set progress bar
   IntOp $0 $INSTALLED * 100
@@ -308,6 +320,8 @@ FunctionEnd
 Function SetSize
   IntOp $1 0 + 0
   !insertmacro DetermineSectionSize qsw106.zip
+  IntOp $1 $1 + $SIZE
+  !insertmacro DetermineSectionSize cfort-bin-win32.zip
   IntOp $1 $1 + $SIZE
   !insertmacro DetermineSectionSize cfort-gpl.zip
   IntOp $1 $1 + $SIZE
